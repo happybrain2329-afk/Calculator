@@ -1,52 +1,44 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Calculator - Plus and Minus Only</title>
-    <meta name="description" content="A professional and sleek calculator with support for addition and subtraction. Designed with premium aesthetics.">
+    <title>Calculator</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Google Fonts: Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <main class="calculator-container">
+        <section class="display">
+            <input type="text" id="display-history" class="display-history" readonly>
+            <input type="text" id="display-main" class="display-main" value="0" readonly>
+        </section>
+        <section class="buttons-grid">
+            <button id="clear" onclick="clearDisplay()">C</button>
+            <button id="delete" onclick="deleteLastChar()">DEL</button>
+            <button id="percentage" onclick="appendInput('%')">%</button>
+            <button id="divide" onclick="appendInput('/')">/</button>
 
-    <main class="calc-container" id="calculator-ui">
-        <header class="display-panel">
-            <div id="display-history">0</div>
-            <input type="text" id="display-main" value="0" readonly aria-label="Calculator input-output">
-        </header>
-
-        <section class="grid">
-            <!-- Clear and Delete -->
-            <button class="clear" onclick="clearDisplay()" aria-label="Clear">C</button>
-            <button class="operator" onclick="appendInput('-')" aria-label="Subtract">−</button>
-            <button class="operator" onclick="appendInput('+')" aria-label="Add">+</button>
-            <button class="operator" onclick="deleteLastChar()" aria-label="Delete">⌫</button>
-
-            <!-- Numbers -->
             <button onclick="appendInput('7')">7</button>
             <button onclick="appendInput('8')">8</button>
             <button onclick="appendInput('9')">9</button>
+            <button id="multiply" onclick="appendInput('*')">*</button>
+
             <button onclick="appendInput('4')">4</button>
             <button onclick="appendInput('5')">5</button>
             <button onclick="appendInput('6')">6</button>
+            <button id="subtract" onclick="appendInput('-')">-</button>
+
             <button onclick="appendInput('1')">1</button>
             <button onclick="appendInput('2')">2</button>
             <button onclick="appendInput('3')">3</button>
+            <button id="add" onclick="appendInput('+')">+</button>
 
-            <!-- Bottom Row -->
-            <button class="span-2" onclick="appendInput('0')">0</button>
-            <button class="equals" onclick="calculate()" aria-label="Calculate">=</button>
+            <button id="sign-change" onclick="toggleSign()">+/-</button>
+            <button onclick="appendInput('0')">0</button>
+            <button onclick="appendInput('.')">.</button>
+            <button id="equals" onclick="calculate()">=</button>
         </section>
     </main>
-
-    <footer class="footer">
-        Premium Calculator &copy; 2026
-    </footer>
-
     <script src="script.js"></script>
 </body>
 </html>
