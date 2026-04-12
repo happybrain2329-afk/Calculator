@@ -35,8 +35,7 @@ function deleteLastChar() {
 
 function calculate() {
     try {
-        // Sanitize input to only allow digits, operators (+, -, *, /), and decimal points.
-        // regex /[^\d+\-*\/.]/g ensures no other character can be evaluated
+        // Sanitize input to only allow digits, operators (+, -, *, /), and decimal points
         const sanitized = currentInput.replace(/[^\d+\-*\/.]/g, '');
         if (!sanitized) return;
 
@@ -45,11 +44,12 @@ function calculate() {
             return; // Don't calculate if trailing operator
         }
 
-        const result = Function('return ' + sanitized)();
+        let result = Function('return ' + sanitized)();
         currentInput = result.toString();
         calculationComplete = true;
-    } catch (error) {
+    } catch (e) {
         currentInput = 'Error';
+        calculationComplete = true;
         setTimeout(() => {
             clearDisplay();
         }, 1500);
@@ -57,5 +57,4 @@ function calculate() {
     updateDisplay();
 }
 
-// Initialize display
 updateDisplay();
