@@ -1,81 +1,58 @@
-const displayMain = document.getElementById('display-main');
-const displayHistory = document.getElementById('display-history');
+let currentInput = '';
+let displayMain = document.getElementById('display-main');
+let calculationComplete = false; // To reset input after a calculation
 
-let currentInput = "0";
-let calculationComplete = false;
-
-function updateDisplay() {
-    displayMain.value = currentInput;
-}
-
-function appendInput(char) {
-    if (calculationComplete && !isNaN(char)) {
-        currentInput = char; 
+function appendInput(value) {
+    if (calculationComplete) {
+        currentInput = '';
         calculationComplete = false;
-    } else {
-        if (currentInput === "0" && !isNaN(char)) {
-            currentInput = char;
-        } else {
-            // Prevent two operators in a row
-            const lastChar = currentInput.slice(-1);
-            if (['+', '-'].includes(char) && ['+', '-'].includes(lastChar)) {
-                currentInput = currentInput.slice(0, -1) + char;
-            } else {
-                currentInput += char;
-            }
-        }
     }
-    updateDisplay();
+    currentInput += value;
+    displayMain.innerText = currentInput;
 }
 
 function clearDisplay() {
-    currentInput = "0";
-    displayHistory.innerText = "0";
+    currentInput = '';
+    displayMain.innerText = '0';
     calculationComplete = false;
-    updateDisplay();
-}
-
-function deleteLastChar() {
-    if (currentInput.length > 1) {
-        currentInput = currentInput.slice(0, -1);
-    } else {
-        currentInput = "0";
-    }
-    updateDisplay();
 }
 
 function calculate() {
+    if (currentInput === '') {
+        return;
+    }
+
+    // Basic input sanitization (as per convention document)
+    // Allows numbers, operators (+, -, *, /), and decimal point.
+    // Prevents multiple operators at the end or invalid characters.
+    const sanitizedInput = currentInput.replace(/[^-()\d/*+.]/g, '');
+
+    // Prevent trailing operators
+    if (['+', '-', '*', '/'].includes(sanitizedInput.slice(-1))) {
+        displayMain.innerText = 'Error';
+        setTimeout(() => {
+            clearDisplay();
+        }, 1500);
+        return;
+    }
+
     try {
-        // Sanitize input to only allow digits, +, and -
-        // regex /[^\d+-]/g ensures no other character can be evaluated
-        const sanitized = currentInput.replace(/[^\d+-]/g, '');
-        if (!sanitized) return;
-
-        // Basic check for empty or trailing operator
-        if(['+', '-'].includes(sanitized.slice(-1))) {
-            return; // Don't calculate if trailing operator
-        }
-
-        // Perform calculation safely
-        const result = Function(`"use strict"; return (${sanitized})`)();
-        
-        displayHistory.innerText = currentInput;
-        currentInput = String(result);
+        // Using Function() for evaluation as per convention document
+        const result = Function('return ' + sanitizedInput)();
+        currentInput = result.toString();
+        displayMain.innerText = currentInput;
         calculationComplete = true;
-        updateDisplay();
-    } catch (e) {
-        currentInput = "Error";
-        updateDisplay();
-        setTimeout(clearDisplay, 1500);
+    } catch (error) {
+        displayMain.innerText = 'Error';
+        setTimeout(() => {
+            clearDisplay();
+        }, 1500);
     }
 }
 
-// Add Keyboard Support
-document.addEventListener('keydown', (e) => {
-    if (e.key >= '0' && e.key <= '9') appendInput(e.key);
-    if (e.key === '+') appendInput('+');
-    if (e.key === '-') appendInput('-');
-    if (e.key === 'Enter' || e.key === '=') calculate();
-    if (e.key === 'Backspace') deleteLastChar();
-    if (e.key === 'Escape') clearDisplay();
+// Initialize display
+document.addEventListener('DOMContentLoaded', () => {
+    if (displayMain) {
+        displayMain.innerText = '0';
+    }
 });
